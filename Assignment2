@@ -149,25 +149,51 @@ insert into projects (
              2023
          );
 select * from projects;
+
 -- Query2->Display all Employee details with Department ‘Computer’ and ‘IT’ and Employee first name starting with p or h.
 select * from employee where(dept_id=4 or dept_id=5) and( emp_fname like 'P%' or emp_fname like 'H%');
+
 -- Query3->lists the number of different Employee Position
 select emp_position from employee;
+
 -- Query4->Give 10% increase in Salary of the Employee whose joining year is before 1985.
 update employee set emp_salary=(emp_salary*0.1+emp_salary) where emp_join_date<'1985-1-1';
 select * from employee;
+
 -- Query5->Delete Department details which location is ‘Mumbai’.
 alter table employee add constraint  foreign key (dept_id) references dept (dept_id) on delete cascade;
 delete from dept where dept_location='Mumbai';
 select * from dept;
+
 -- Query6->Find the names of Projects with location ‘pune’ .
 select (proj_name) from projects where proj_location='Pune';
+
 -- Query7->Find the project having cost in between 100000 to 500000.
  select (proj_name) from projects where proj_cost between 100000 and 500000;
+
  -- Query 8->Find the project having maximum price and find average of Project cost
  select max(proj_cost) as Maximum_Project_cost from projects;
+
  -- Query9->Display all employees with Emp _id and Emp name in decreasing order of
  select emp_id,emp_fname from employee order by emp_lname desc;
+
 -- Query10->Display Proj_name,Proj_location ,Proj_cost of all project started in 2004,2005,2007
 select proj_name,proj_location,proj_cost,proj_year from projects where (proj_year=2004 or proj_year=2005 or proj_year=2007);
+
+-- Additional Queries
+-- List all employees who joined after the year 2000. 
+select * from employee where emp_join_date> '2000-12-31';
+
+-- Find the total number of employees in each department.
+select count(emp_id) as Total_No_Of_Employees from employee;
+
+-- Retrieve the details of the second highest-paid employee.emp_salary
+select * from employee order by emp_salary desc Limit 1 offset 1;
+
+-- Find all projects with a cost greater than 50,000.
+select * from projects where proj_cost>50000;
+
+-- Display the department names and their respective locations for all departments.
+select dept_name,dept_location from dept;
+
 
