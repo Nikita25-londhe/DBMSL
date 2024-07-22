@@ -1,0 +1,173 @@
+create table employee
+(
+  emp_id int primary key auto_increment,
+  dept_id int,
+  emp_fname varchar(255),
+  emp_lname varchar(255),
+  emp_position varchar(255),
+  emp_salary int,
+  emp_join_date varchar(255)
+ );
+ create table dept(
+  dept_id int primary key auto_increment,
+  dept_name varchar(255),
+  dept_location varchar(255)
+);
+create table projects(
+  proj_id int primary key auto_increment,
+  dept_id int,
+  proj_name varchar(255),
+  proj_location varchar(255),
+  proj_cost int,
+  proj_year int,
+  foreign key (dept_id) references dept(dept_id) on delete cascade
+);
+alter table employee
+add constraint fk_emp_dept foreign key (dept_id) references dept(dept_id);
+show tables;
+
+-- Quer1->Insert at least 10 records in the Employee table and insert other tables accordingly.
+insert into dept(dept_name, dept_location)
+values
+  ("Production", "Banglore"),
+  ("Administration", "Mumbai"),
+  ("Finance", "Pune"),
+  ("IT", "Pune"),
+  ("Computer", "Mumbai"),
+  ("Bussiness", "Delhi"),
+  ("Sales", "Nagpur");  
+select * from dept;
+insert into employee (
+         dept_id,
+         emp_fname,
+         emp_lname,
+         emp_position,
+         emp_salary,
+         emp_join_date
+         )
+   values 
+          (
+            4,
+            'Nikita',
+            'Londhe',
+            'Project Manager',
+             100000,
+             '2024-02-05'
+          ),
+          (
+             1,
+             'Ajinkya',
+             'shah',
+             'Manager',
+             800000,
+             '2022-06-12'
+         ),
+         (
+             3,
+             'Aditya',
+             'Joshi',
+           'Accountant',
+             500000,
+             '1982-08-12'
+         ),
+         (
+             2,
+             'Amit',
+             'Vora',
+             'HR Manager',
+             700000,
+             '1983-02-15'
+         ),
+         (
+             4,
+             'Sneha',
+             'Joshi',
+             'Software Engineer',
+             90000,
+             '2024-11-20'
+         ),
+         (
+             5,
+             'Priya',
+             'Shukla',
+             'Graphics Designer',
+           600000,
+             '1980-07-10'
+         ),
+         (
+             6,
+             'Rahul',
+             'Gupta',
+             'Business Analyst',
+             750000,
+             '2024-04-30'
+         );
+select * from employee;
+insert into projects (
+               dept_id,
+               proj_name,
+             proj_location,
+             proj_cost,
+             proj_year
+         )
+     values (
+             4,
+             "Development of E-Commerse website",
+             "Pune",
+             50000,
+             2004
+         ),
+         (
+             1,
+             'Design of New Products',
+             'Bangalore',
+             75000,
+             2005
+         ),
+         (
+             3,
+             'Financial Analysis System',
+             'Mumbai',
+             40000,
+             2022
+         ),
+         (2, 'HR Training Program', 'Mumbai', 20000, 2023),
+         (4, 'IT System Upgrade', 'Pune', 60000, 2024),
+         (5, 'Computer Graphics Animation', 'Mumbai', 35000, 2023),
+         (
+             6,
+             'Business Expansion Plan',
+             'Nashik',
+             80000,
+             2007
+         ),
+         (
+             7,
+             'Sales Strategy Revamp',
+             'Nagar',
+             30000,
+             2023
+         );
+select * from projects;
+-- Query2->Display all Employee details with Department ‘Computer’ and ‘IT’ and Employee first name starting with p or h.
+select * from employee where(dept_id=4 or dept_id=5) and( emp_fname like 'P%' or emp_fname like 'H%');
+-- Query3->lists the number of different Employee Position
+select emp_position from employee;
+-- Query4->Give 10% increase in Salary of the Employee whose joining year is before 1985.
+update employee set emp_salary=(emp_salary*0.1+emp_salary) where emp_join_date<'1985-1-1';
+select * from employee;
+-- Query5->Delete Department details which location is ‘Mumbai’.
+alter table employee add constraint  foreign key (dept_id) references dept (dept_id) on delete cascade;
+delete from dept where dept_location='Mumbai';
+select * from dept;
+-- Query6->Find the names of Projects with location ‘pune’ .
+select (proj_name) from projects where proj_location='Pune';
+-- Query7->Find the project having cost in between 100000 to 500000.
+ select (proj_name) from projects where proj_cost between 100000 and 500000;
+ -- Query 8->Find the project having maximum price and find average of Project cost
+ select max(proj_cost) as Maximum_Project_cost from projects;
+ -- Query9->Display all employees with Emp _id and Emp name in decreasing order of
+ select emp_id,emp_fname from employee order by emp_lname desc;
+-- Query10->Display Proj_name,Proj_location ,Proj_cost of all project started in 2004,2005,2007
+select proj_name,proj_location,proj_cost,proj_year from projects where (proj_year=2004 or proj_year=2005 or proj_year=2007);
+
