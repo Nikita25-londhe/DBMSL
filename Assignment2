@@ -197,3 +197,4 @@ select * from projects where proj_cost>50000;
 select dept_name,dept_location from dept;
 
 
+
