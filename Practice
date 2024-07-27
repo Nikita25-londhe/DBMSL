@@ -72,3 +72,26 @@ select * from EMPLOYEE where salary between 10000 and 50000;
 select * from EMPLOYEE where year(joining_date)=2022 and month(joining_date)=12;
 select count(dept),dept from EMPLOYEE where dept='Admin' group by dept;
 select concat (fname," ",lname) as FullName,salary from EMPLOYEE where salary between 5000 and 10000;
+elect count(id),dept from EMPLOYEE group by dept order by count(id) desc;
+select * from EMPLOYEE where id in (select id from title where emp_title='Manager');
+select emp_title,count(id) from Title group by emp_title having count(id)>2;
+select * from EMPLOYEE where mod(id,2)!=0;
+create table emp_clone like EMPLOYEE;
+show tables;
+insert into emp_clone (select* from EMPLOYEE);
+
+select* from emp_clone;
+select* from Title;
+select e.id,e.fname,e.dept from Employee as e inner join Title as t on e.id=t.id;
+select *from employee where id not in(select id from bonus);
+select curdate();
+select now();
+select * from employee order by salary desc limit 4,1;
+select salary from employee as e1 where 4=
+(select count(salary ) from employee as e2 where e2.salary>e1.salary);
+select e1.*,e2.fname from employee as e1,employee as e2 where e1.salary= e2.salary and e1.id!=e2.id;
+select * from employee order by salary desc limit 1,1;
+select *from employee as e1 where 1=(
+select count(salary) from employee as e2 where e2.salary >e1.salary);
+select max(salary)from employee where salary not in(select max(salary) from employee);
+select * from employee union all select* from employee order by id;
