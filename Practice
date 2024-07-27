@@ -1,0 +1,74 @@
+
+-- create
+CREATE TABLE EMPLOYEE (
+  id int  PRIMARY KEY,
+  fname varchar(255) NOT NULL,
+  lname varchar(255) not null,
+  joining_date Date,
+  dept varchar(255) NOT NULL,
+  salary int
+);
+create TABLE Bonus
+(
+  id int,
+  bonus_amount int default 0,
+  bonus_date Date,
+  foreign key (id) references  EMPLOYEE(id)
+);
+create TABLE Title
+(
+  id int,
+  title varchar(255),
+  affected_from DateTime,
+  foreign key (id) references EMPLOYEE(id)
+);
+show tables;
+insert into EMPLOYEE (id,fname,lname,joining_date,dept,salary)
+values
+(1,"Minal","shah",'2022-12-3',"HR",5000),
+(2,"Nikita","Thange",'2022-11-3',"Admin",6000),
+(3,"Avanti","Desai",'2022-12-3',"Account",7000),
+(4,"vira","Joshi",'2022-12-3',"HR",8000),
+(5,"virat","Kohli",'2022-12-3',"Admin",9000),
+(6,"sara","Malik",'2022-12-3',"HR",100000),
+(7,"Ganaga","harde",'2022-12-3',"Account",10011),
+(8,"Mital","hamne",'2022-12-3',"Admin",11000);
+select * from EMPLOYEE;
+insert into Bonus (id,bonus_amount,bonus_date)
+values
+(1,5069,'2000-3-4'),
+(2,2000,'2005-6-4'),
+(3,3000,'2010-12-4'),
+(1,4000,'2009-11-4');
+select * from Bonus;
+insert into Title (id,title,affected_from)
+values
+(1,"Manager",'2000-2-6'),
+(2,"Manager",'2000-2-6'),
+(4,"Asst_Manager",'2000-2-6'),
+(1,"Executive",'2000-2-6'),
+(5,"Manager",'2000-2-6'),
+(7,"Executive",'2000-2-6'),
+(8,"Asst_Manager",'2000-2-6');
+
+
+select * from title;
+select fname as Worker_Name from EMPLOYEE;
+select ucase(fname) as Worker_Name from EMPLOYEE;
+select dept from EMPLOYEE group by dept;
+select substring(fname,1,3) from EMPLOYEE;
+SELECT instr(fname,'i')  from EMPLOYEE where fname='Mital';
+select trim(fname) from EMPLOYEE;
+select distinct dept,length(dept) from EMPLOYEE;
+select replace (fname,"A",'a') from EMPLOYEE;
+select concat(fname," ",lname)as 'Complete Name' from EMPLOYEE;
+select * from EMPLOYEE order by fname asc,dept desc;
+select * from EMPLOYEE where fname="Minal" or fname="Mital";
+select * from EMPLOYEE where fname not in ("Minal","Mital");
+select * from EMPLOYEE where dept like 'Admin%';
+select * from EMPLOYEE where fname like '%t';
+select * from EMPLOYEE where fname like '%_____a';
+select * from EMPLOYEE where salary between 10000 and 50000;
+select * from EMPLOYEE where year(joining_date)=2022 and month(joining_date)=12;
+select count(dept),dept from EMPLOYEE where dept='Admin' group by dept;
+select concat (fname," ",lname) as FullName,salary from EMPLOYEE where salary between 5000 and 10000;
