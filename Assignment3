@@ -155,4 +155,92 @@ select count(e1.emp_id) as "Number of Emoloyees" from employee as e1 inner join 
 -- 9. Create a view showing the employee and Department details.
 create view v1 as select e.emp_fname,d.dept_name from employee as e inner join dept as d on
 e.dept_id=d.dept_id;
+select * from v1;
++-----------+----------------+
+| emp_fname | dept_name      |
++-----------+----------------+
+| Nikita    | IT             |
+| Ajinkya   | Production     |
+| Aditya    | Finance        |
+| Amit      | Administration |
+| Sneha     | IT             |
+| Priya     | Computer       |
+| Rahul     | Business       |
++-----------+----------------+
 -- 10. Perform Manipulation on simple view-Insert, update, delete, drop view.
+update v1 set emp_fname="Am" where emp_fname="Amit";
+select * from employee;
++--------+---------+-----------+-----------+-------------------+------------+---------------+
+| emp_id | dept_id | emp_fname | emp_lname | emp_position      | emp_salary | emp_join_date |
++--------+---------+-----------+-----------+-------------------+------------+---------------+
+|      1 |       4 | Nikita    | Londhe    | Project Manager   |     100000 | 2024-02-05    |
+|      2 |       1 | Ajinkya   | Shah      | Manager           |     800000 | 2022-06-12    |
+|      3 |       3 | Aditya    | Joshi     | Accountant        |     500000 | 1982-08-12    |
+|      4 |       2 | Am        | Vora      | HR Manager        |     700000 | 1983-02-15    |
+|      5 |       4 | Sneha     | Joshi     | Software Engineer |      90000 | 2024-11-20    |
+|      6 |       5 | Priya     | Shukla    | Graphics Designer |     600000 | 1980-07-10    |
+|      7 |       6 | Rahul     | Gupta     | Business Analyst  |     750000 | 2024-04-30    |
++--------+---------+-----------+-----------+-------------------+------------+---------------+
++-----------+----------------+
+insert into v1 values("new",3);
+ERROR 1394 (HY000): Can not insert into join view 'te31241_db.v1' without fields list
+delete from v1 where emp_fname="Am";
+ERROR 1395 (HY000): Can not delete from join view 'te31241_db.v1'
+drop view v1;
+-- Additional Queries
+-- 1Find the department name and the count of employees in each department using an INNER JOIN.
+select d1.dept_name,count(e1.emp_id) as "Number of Employees in dept" from dept as d1 left join employee as e1 on e1.dept_id=d1.dept_id group by d1.dept_name;
++----------------+-----------------------------+
+| dept_name      | Number of Employees in dept |
++----------------+-----------------------------+
+| Production     |                           1 |
+| Administration |                           1 |
+| Finance        |                           1 |
+| IT             |                           2 |
+| Computer       |                           1 |
+| Business       |                           1 |
+| Sales          |                           0 |
++----------------+-----------------------------+
+-- 2.List the project names and their respective department names for projects that have a cost greater than 40000
+select p1.proj_name,d1.dept_name from projects as p1 left join dept as d1 on p1.dept_id=d1.dept_id where p1.proj_cost>40000;
++-----------------------------------+------------+
+| proj_name                         | dept_name  |
++-----------------------------------+------------+
+| Development of E-Commerce website | IT         |
+| Design of New Products            | Production |
+| IT System Upgrade                 | IT         |
+| Business Expansion Plan           | Business   |
++-----------------------------------+------------+
+-- 3.Find the employee names, their department names, and project names for all employees working in the 'Pune' location using INNER JOINs.
+select e1.emp_fname,d1.dept_name,p1.proj_name from employee as e1 inner join dept as d1 on e1.dept_id=d1.dept_id inner join projects as p1 on e1.dept_id=
+p1.dept_id where p1.proj_location='pune';
++-----------+-----------+-----------------------------------+
+| emp_fname | dept_name | proj_name                         |
++-----------+-----------+-----------------------------------+
+| Nikita    | IT        | Development of E-Commerce website |
+| Sneha     | IT        | Development of E-Commerce website |
+| Nikita    | IT        | IT System Upgrade                 |
+| Sneha     | IT        | IT System Upgrade                 |
++-----------+-----------+-----------------------------------+
+-- 4.Retrieve the details of all employees who joined after January 1, 2024, and their respective department names using an INNER JOIN.
+select e1.*,d1.dept_name from employee as e1 inner join dept as d1 on d1.dept_id=e1.dept_id where e1.joining_date >'2024-1-1'; 
++--------+---------+-----------+-----------+-------------------+------------+---------------+-----------+
+| emp_id | dept_id | emp_fname | emp_lname | emp_position      | emp_salary | emp_join_date | dept_name |
++--------+---------+-----------+-----------+-------------------+------------+---------------+-----------+
+|      1 |       4 | Nikita    | Londhe    | Project Manager   |     100000 | 2024-02-05    | IT        |
+|      5 |       4 | Sneha     | Joshi     | Software Engineer |      90000 | 2024-11-20    | IT        |
+|      7 |       6 | Rahul     | Gupta     | Business Analyst  |     750000 | 2024-04-30    | Business  |
++--------+---------+-----------+-----------+-------------------+------------+---------------+-----------+
+-- 5.Find the total salary of employees in each department 
+select d1.dept_name as "Department",sum(e1.emp_salary) as "Total salary" from dept as d1 left join employee as e1 on e1.dept_id=d1.dept_id group by d1.dept_name;
++----------------+--------------+
+| Department     | Total salary |
++----------------+--------------+
+| Production     |       800000 |
+| Administration |       700000 |
+| Finance        |       500000 |
+| IT             |       190000 |
+| Computer       |       600000 |
+| Business       |       750000 |
+| Sales          |         NULL |
++----------------+--------------+
