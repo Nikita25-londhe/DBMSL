@@ -1,3 +1,4 @@
+
 -- Create the department table first to avoid foreign key issues
 CREATE TABLE dept (
   dept_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -62,39 +63,96 @@ VALUES
   (6, 'Rahul', 'Gupta', 'Business Analyst', 750000, '2024-04-30');
 
 -- Check data in the employee table
-SELECT * FROM employee;
 
 -- Insert data into the projects table
 INSERT INTO projects (
-    ->   dept_id,
-    ->   proj_name,
-    ->   proj_location,
-    ->   proj_cost,
-    ->   proj_year
-    -> )
-    -> VALUES 
-    ->   (4, 'Development of E-Commerce website', 'Pune', 50000, 2004),
-    ->   (1, 'Design of New Products', 'Bangalore', 75000, 2005),
-    ->   (3, 'Financial Analysis System', 'Mumbai', 40000, 2022),
-    ->   (2, 'HR Training Program', 'Mumbai', 20000, 2023),
-    ->   (4, 'IT System Upgrade', 'Pune', 60000, 2024),
-    ->   (5, 'Computer Graphics Animation', 'Mumbai', 35000, 2023),
-    ->   (6, 'Business Expansion Plan', 'Nashik', 80000, 2007),
-    ->   (7, 'Sales Strategy Revamp', 'Nagar', 30000, 2023);
+    dept_id,
+    
+     proj_name,
+       proj_location,
+       proj_cost,
+       proj_year
+     )
+     VALUES 
+       (4, 'Development of E-Commerce website', 'Pune', 50000, 2004),
+       (1, 'Design of New Products', 'Bangalore', 75000, 2005),
+       (3, 'Financial Analysis System', 'Mumbai', 40000, 2022),
+       (2, 'HR Training Program', 'Mumbai', 20000, 2023),
+       (4, 'IT System Upgrade', 'Pune', 60000, 2024),
+       (5, 'Computer Graphics Animation', 'Mumbai', 35000, 2023),
+       (6, 'Business Expansion Plan', 'Nashik', 80000, 2007),
+       (7, 'Sales Strategy Revamp', 'Nagar', 30000, 2023);
 
 -- Check data in the projects table
 SELECT * FROM projects;
 
--- Que2 Find the emp_fname,Emp_position,location,Emp_JoinDate who have same Dept id.
-select emp_fname,emp_position,emp_join_date,dept_id from employee group by dept_id;
--- Que3 Find the Employee details ,Proj_id,Project cost who does not have Project
---location as ‘Pune’.
-  select e1.*,p1.proj_id,p1.proj_cost from employee as e1 left join projects as p1 on e1.dept_id=p1.dept_id where proj_location<>'Pune';
--- Que4 Find Department Name ,employee name, Emp_position for which project year
---is 2020,
-select e1.dept_id,e1.emp_fname,e1.emp_position,p1.proj_year from employee as e1 right join projects as p1 on e1.dept_id=p1.dept_id;
---Display emp_position,D_name who have Project cost >30000
-SELECT  distinct e1.emp_position,d1.dept_name FROM employee as e1  NATURAL JOIN dept as d1 NATURAL JOIN projects as p1 WHERE p1.proj_cost > 3000;
+-- 1. Find Employee details and Department details using NATURAL JOIN.
+select *  from employee  natural join dept;
++---------+--------+-----------+-----------+-------------------+------------+---------------+----------------+---------------+
+| dept_id | emp_id | emp_fname | emp_lname | emp_position      | emp_salary | emp_join_date | dept_name      | dept_location |
++---------+--------+-----------+-----------+-------------------+------------+---------------+----------------+---------------+
+|       4 |      1 | Nikita    | Londhe    | Project Manager   |     100000 | 2024-02-05    | IT             | Pune          |
+|       1 |      2 | Ajinkya   | Shah      | Manager           |     800000 | 2022-06-12    | Production     | Banglore      |
+|       3 |      3 | Aditya    | Joshi     | Accountant        |     500000 | 1982-08-12    | Finance        | Pune          |
+|       2 |      4 | Amit      | Vora      | HR Manager        |     700000 | 1983-02-15    | Administration | Mumbai        |
+|       4 |      5 | Sneha     | Joshi     | Software Engineer |      90000 | 2024-11-20    | IT             | Pune          |
+|       5 |      6 | Priya     | Shukla    | Graphics Designer |     600000 | 1980-07-10    | Computer       | Mumbai        |
+|       6 |      7 | Rahul     | Gupta     | Business Analyst  |     750000 | 2024-04-30    | Business       | Delhi         |
++---------+--------+-----------+-----------+-------------------+------------+---------------+----------------+--------------
+-- 2. Find the emp_fname,Emp_position,location,Emp_JoinDate who have same Dept id.
 
---Que 5 Find the names of all the Projects that started in the year 2015.
+-- 3. Find the Employee details ,Proj_id,Project cost who does not have Project location as ‘Mumbai’.
+select e1.*,p1.proj_id,p1.proj_cost from employee as e1 left join projects as p1 on e1.dept_id=p1.dept_id where 
+p1.proj_location<>"Mumbai";
++--------+---------+-----------+-----------+-------------------+------------+---------------+---------+-----------+
+| emp_id | dept_id | emp_fname | emp_lname | emp_position      | emp_salary | emp_join_date | proj_id | proj_cost |
++--------+---------+-----------+-----------+-------------------+------------+---------------+---------+-----------+
+|      1 |       4 | Nikita    | Londhe    | Project Manager   |     100000 | 2024-02-05    |       1 |     50000 |
+|      1 |       4 | Nikita    | Londhe    | Project Manager   |     100000 | 2024-02-05    |       5 |     60000 |
+|      2 |       1 | Ajinkya   | Shah      | Manager           |     800000 | 2022-06-12    |       2 |     75000 |
+|      5 |       4 | Sneha     | Joshi     | Software Engineer |      90000 | 2024-11-20    |       1 |     50000 |
+|      5 |       4 | Sneha     | Joshi     | Software Engineer |      90000 | 2024-11-20    |       5 |     60000 |
+|      7 |       6 | Rahul     | Gupta     | Business Analyst  |     750000 | 2024-04-30    |       7 |     80000 |
++--------+---------+-----------+-----------+-------------------+------------+---------------+---------+-----------+
+-- 4. Find Department Name ,employee name, Emp_position for which project yearis 2023
+select e1.dept_id,e1.emp_fname,e1.emp_position from employee as e1 left join projects as p1 on e1.dept_id=p1.dept_id where p1.proj_year=2023;
++---------+-----------+-------------------+
+| dept_id | emp_fname | emp_position      |
++---------+-----------+-------------------+
+|       2 | Amit      | HR Manager        |
+|       5 | Priya     | Graphics Designer |
++---------+-----------+-------------------+
+-- 5. Display emp_position,D_name who have Project cost &gt;30000
+SELECT e1.emp_position, d1.dept_name, p1.proj_cost FROM employee AS e1 LEFT JOIN dept AS d1 ON e1.dept_id = d1.dept_id LEFT JOIN projects AS p1 ON d1.dept_id = p1.dept_id WHERE p1.proj_cost > 30000;
++-------------------+------------+-----------+
+| emp_position      | dept_name  | proj_cost |
++-------------------+------------+-----------+
+| Project Manager   | IT         |     50000 |
+| Software Engineer | IT         |     50000 |
+| Manager           | Production |     75000 |
+| Accountant        | Finance    |     40000 |
+| Project Manager   | IT         |     60000 |
+| Software Engineer | IT         |     60000 |
+| Graphics Designer | Computer   |     35000 |
+| Business Analyst  | Business   |     80000 |
++-------------------+------------+-----------+
+-- 6. Find the names of all the Projects that started in the year 2015.
 select proj_name from projects where proj_year=2015;
+-- 7. List the Dept_name having no_of_emp=2
+select count(e1.emp_id) as "Number of Employees",d1.dept_name from employee as e1 natural join dept as d1 group by dept_id having count(emp_id)=2;
++---------------------+-----------+
+| Number of Employees | dept_name |
++---------------------+-----------+
+|                   2 | IT        |
++---------------------+-----------+
+-- 8.Display the total number of employee who have joined any project before 2009
+select count(e1.emp_id) as "Number of Emoloyees" from employee as e1 inner join projects as p1 on e1.dept_id=p1.dept_id where proj_year<2009;
++---------------------+
+| Number of Emoloyees |
++---------------------+
+|                   4 |
++---------------------+
+-- 9. Create a view showing the employee and Department details.
+create view v1 as select e.emp_fname,d.dept_name from employee as e inner join dept as d on
+e.dept_id=d.dept_id;
+-- 10. Perform Manipulation on simple view-Insert, update, delete, drop view.
