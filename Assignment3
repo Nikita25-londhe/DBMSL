@@ -1,3 +1,80 @@
+-- Create the department table first to avoid foreign key issues
+CREATE TABLE dept (
+  dept_id INT PRIMARY KEY AUTO_INCREMENT,
+  dept_name VARCHAR(255),
+  dept_location VARCHAR(255)
+);
+
+-- Create the employee table
+CREATE TABLE employee (
+  emp_id INT PRIMARY KEY AUTO_INCREMENT,
+  dept_id INT,
+  emp_fname VARCHAR(255),
+  emp_lname VARCHAR(255),
+  emp_position VARCHAR(255),
+  emp_salary INT,
+  emp_join_date DATE,
+  FOREIGN KEY (dept_id) REFERENCES dept(dept_id) ON DELETE CASCADE
+);
+
+-- Create the projects table
+CREATE TABLE projects (
+  proj_id INT PRIMARY KEY AUTO_INCREMENT,
+  dept_id INT,
+  proj_name VARCHAR(255),
+  proj_location VARCHAR(255),
+  proj_cost INT,
+  proj_year INT,
+  FOREIGN KEY (dept_id) REFERENCES dept(dept_id) ON DELETE CASCADE
+);
+-- Insert data into the department table
+INSERT INTO dept (dept_id,dept_name, dept_location)
+VALUES
+  (1,'Production', 'Banglore'),
+  (2,'Administration', 'Mumbai'),
+  (3,'Finance', 'Pune'),
+  (4,'IT', 'Pune'),
+  (5,'Computer', 'Mumbai'),
+  (6,'Business', 'Delhi'),
+  (7,'Sales', 'Nagpur'); 
+-- Insert data into the employee table
+INSERT INTO employee 
+(
+  dept_id,
+  emp_fname,
+  emp_lname,
+  emp_position,
+  emp_salary,
+  emp_join_date
+)
+VALUES 
+  (4, 'Nikita', 'Londhe', 'Project Manager', 100000, '2024-02-05'),
+  (1, 'Ajinkya', 'Shah', 'Manager', 800000, '2022-06-12'),
+  (3, 'Aditya', 'Joshi', 'Accountant', 500000, '1982-08-12'),
+  (2, 'Amit', 'Vora', 'HR Manager', 700000, '1983-02-15'),
+  (4, 'Sneha', 'Joshi', 'Software Engineer', 90000, '2024-11-20'),
+  (5, 'Priya', 'Shukla', 'Graphics Designer', 600000, '1980-07-10'),
+  (6, 'Rahul', 'Gupta', 'Business Analyst', 750000, '2024-04-30');
+
+-- Insert data into the projects table
+INSERT INTO projects (
+    dept_id,
+    
+     proj_name,
+       proj_location,
+       proj_cost,
+       proj_year
+     )
+     VALUES 
+       (4, 'Development of E-Commerce website', 'Pune', 50000, 2004),
+       (1, 'Design of New Products', 'Bangalore', 75000, 2005),
+       (3, 'Financial Analysis System', 'Mumbai', 40000, 2022),
+       (2, 'HR Training Program', 'Mumbai', 20000, 2023),
+       (4, 'IT System Upgrade', 'Pune', 60000, 2024),
+       (5, 'Computer Graphics Animation', 'Mumbai', 35000, 2023),
+       (6, 'Business Expansion Plan', 'Nashik', 80000, 2007),
+       (7, 'Sales Strategy Revamp', 'Nagar', 30000, 2023);
+
 -- 1. Find Employee details and Department details using NATURAL JOIN.
 select *  from employee  natural join dept;
 +---------+--------+-----------+-----------+-------------------+------------+---------------+----------------+---------------+
