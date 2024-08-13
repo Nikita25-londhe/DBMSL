@@ -1,1 +1,82 @@
+create table Borrower
+(
+    roll_no int,
+    fname varchar(25),
+    lname varchar(25),
+    DOI date,
+    book_name varchar(25),
+    status_id varchar(1) default 'I'
+);
+create table Fine
+(
+    roll_no int primary key,
+    dor date,
+    No_of_days int,
+    amount int
+
+);
+alter table Borrower add primary key(roll_no,book_name);
+insert into Borrower (roll_no,fname,lname,DOI,book_name)
+values
+(1,"Nikita","Londhe",'2024-08-01','Atomic Habits'),
+(2,"Shrawani","Gaikawad",'2024-07-15','Wise and Otherwise'),
+(3,"Shivanjali","Karande",'2024-07-20','House Of Cards'),
+(4,"Sanjana","Ghorpade",'2024-07-22','1000 Stitches'),
+(5,"Mahi","Shah",'2024-07-10','Harry Potter'),
+(6,"Kalyani","Patil",'2024-06-25','War and Peace'),
+(7,"Jidnyasa","Harad",'2024-6-22','Mritinjay');
+delimiter //
+CREATE PROCEDURE proc(in r int,in b_name varchar(25),out amount int)
+begin
+    declare fine_amount int default 0;
+    declare d date;
+
+    DECLARE no_record_found CONDITION FOR SQLSTATE '02000';
+    DECLARE CONTINUE HANDLER FOR no_record_found
+    BEGIN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No record found for the given roll_no';
+    END;
+
+    select DOI into d from Borrower where roll_no = r and  book_name = b_name;
+    if  datediff(CURDATE(), d) <= 15 then set fine_amount = 0;
+    elseif  datediff(CURDATE(), d) <= 30 then set fine_amount = (datediff(CURDATE(), d)-15)* 5;
+    else set fine_amount = 50 * (datediff(CURDATE(), d) - 30) + 75;
+    end if;
+
+    update Borrower set status_id = 'R' where roll_no = r AND book_name = b_name;
+    insert into Fine (roll_no, dor,No_of_days,amount)values (r, CURDATE(),datediff(curdate(),d),fine_amount);
+    set amount = fine_amount;
+end//
+delimiter ;
+call proc(2,"Wise and Otherwise",@m);
+call proc(3,"House Of Cards",@m);
+call proc(6,"War and Peace",@m);
+call proc(4,"1000 Stitches",@m);
+select * from Fine;
+select * from Borrower;
++---------+------------+----------+------------+--------------------+-----------+
+| roll_no | fname      | lname    | DOI        | book_name          | status_id |
++---------+------------+----------+------------+--------------------+-----------+
+|       1 | Nikita     | Londhe   | 2024-08-01 | Atomic Habits      | I         |
+|       2 | Shrawani   | Gaikawad | 2024-07-15 | Wise and Otherwise | R         |
+|       3 | Shivanjali | Karande  | 2024-07-20 | House Of Cards     | R        |
+|       5 | Mahi       | Shah     | 2024-07-10 | Harry Potter       | I          |
+|       4 | Sanjana    | Ghorpade | 2024-07-22 | 1000 Stitches      | R         |
+|       6 | Kalyani    | Patil    | 2024-06-25 | War and Peace      | R         |
+|       7 | Jidnyasa   | Harad    | 2024-06-22 | Mritinjay          | I         |
++---------+------------+----------+------------+--------------------+-----------+
++---------+------------+------------+--------+
+| roll_no | dor        | No_of_days | amount |
++---------+------------+------------+--------+
+|       2 | 2024-08-13 |         29 |     70 |
+|       3 | 2024-08-13 |         24 |     45 |
+|       4 | 2024-08-13 |         22 |     35 |
+|       6 | 2024-08-13 |         49 |   1025 |
++---------+------------+------------+--------+
+-- Exception Handlim=mg
+call proc(3,"Mi vanvasi",@m);
+ERROR 1644 (45000): No record found for the given roll_no
+
+
+
 
