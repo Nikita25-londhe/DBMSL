@@ -1,1 +1,84 @@
+create table old_emp
+(
+  id int primary key,
+  emp_name varchar(25),
+  salary int
+);
+create table new_emp
+(
+  id int primary key,
+  emp_name varchar(25),
+  salary int
+);
+insert into old_emp (id,emp_name,salary) 
+values
+	(10,"Nikita",100000),
+	(7,"Shivanjali",65467),
+	(12,"Shrawani",43354),
+	(5,"Sanjana",65467),
+  (2,"Vaishnavi",53465);
+insert into new_emp (id,emp_name,salary) 
+values
+	(3,"Shubham",100000),
+	(4,"Nachiket",65467),
+	(12,"Shrawani",43354),
+	(5,"Sanjana",65467),
+  (6,"Tejas",53465);
+delimiter //
+CREATE PROCEDURE merge ()
+BEGIN
+	  declare i int;
+    declare name varchar(25);
+    declare sal int;
+    declare flag int  default 0;
+    declare emp_cursor cursor for select id,emp_name,salary from old_emp;
+    declare continue handler for not found set flag=1;
+    open emp_cursor;
+    emp_fetch:LOOP
+    if flag=1 then leave emp_fetch;
+    end if;
+    fetch emp_cursor into  i,name,sal;
+    if not exists(select id from new_emp where emp_name=name and salary=sal)
+    then 
+    insert into new_emp values(i,name,sal);
+    end if;
+    end loop;
+    close emp_cursor;
+END//
+delimiter ;
+select * from old_emp;
++----+------------+--------+
+| id | emp_name   | salary |
++----+------------+--------+
+|  2 | Vaishnavi  |  53465 |
+|  5 | Sanjana    |  65467 |
+|  7 | Shivanjali |  65467 |
+| 10 | Nikita     | 100000 |
+| 12 | Shrawani   |  43354 |
++----+------------+--------+
+select * from new_emp;
++----+----------+--------+
+| id | emp_name | salary |
++----+----------+--------+
+|  3 | Shubham  | 100000 |
+|  4 | Nachiket |  65467 |
+|  5 | Sanjana  |  65467 |
+|  6 | Tejas    |  53465 |
+| 12 | Shrawani |  43354 |
++----+----------+--------+
+call merge();
+select * from new_emp;
++----+------------+--------+
+| id | emp_name   | salary |
++----+------------+--------+
+|  2 | Vaishnavi  |  53465 |
+|  3 | Shubham    | 100000 |
+|  4 | Nachiket   |  65467 |
+|  5 | Sanjana    |  65467 |
+|  6 | Tejas      |  53465 |
+|  7 | Shivanjali |  65467 |
+| 10 | Nikita     | 100000 |
+| 12 | Shrawani   |  43354 |
++----+------------+--------+
+
 
