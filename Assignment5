@@ -1,1 +1,61 @@
-
+CREATE TABLE Stud_Marks 
+(
+    roll_no INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(25),
+    total_marks INT
+);
+INSERT INTO Stud_Marks(name, total_marks) VALUES
+("Manish", 1000),
+("Dhiraj", 835),
+("Sonali", 720),
+("Reva", 920),
+("Minal", 1490);
+CREATE TABLE Result
+(
+    roll_no INT,
+    name VARCHAR(25),
+    class VARCHAR(25)
+);
+DELIMITER //
+CREATE PROCEDURE proc_Grade(IN r INT, OUT class VARCHAR(25))
+BEGIN
+    DECLARE total INT;
+    SELECT total_marks INTO total FROM Stud_Marks WHERE roll_no = r;
+    
+    IF total >= 990 AND total <= 1500 THEN
+        SET class = "Distinction";
+    ELSEIF total >= 900 AND total <= 989 THEN
+        SET class = "First class";
+    ELSEIF total >= 825 AND total <= 899 THEN
+        SET class = "Higher Second Class";
+    ELSE
+        SET class = "Fail";
+    END IF;
+END //
+DELIMITER ;
+DELIMITER //
+CREATE PROCEDURE FillResult(IN r INT)
+BEGIN
+    DECLARE std_name VARCHAR(25);
+    DECLARE res VARCHAR(25);
+    DECLARE exit HANDLER FOR NOT FOUND SELECT "Student Not Found";
+    SELECT name INTO std_name FROM Stud_Marks WHERE roll_no = r;
+    CALL proc_Grade(r, @res);
+    INSERT INTO Result VALUES (r, std_name, @res);
+END //
+DELIMITER ;
+CALL FillResult(1);
+CALL FillResult(2);
+CALL FillResult(3);
+CALL FillResult(4);
+CALL FillResult(5);
+SELECT * FROM Result;
++---------+--------+---------------------+
+| roll_no | name   | class               |
++---------+--------+---------------------+
+|       1 | Manish | Distinction         |
+|       2 | Dhiraj | Higher Second Class |
+|       3 | Sonali | Fail                |
+|       4 | Reva   | First class         |
+|       5 | Minal  | Distinction         |
++---------+--------+---------------------+
