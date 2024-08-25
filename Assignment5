@@ -34,21 +34,24 @@ BEGIN
 END //
 DELIMITER ;
 DELIMITER //
-CREATE PROCEDURE FillResult(IN r INT)
+CREATE function FillResult(r INT)returns int deterministic
 BEGIN
     DECLARE std_name VARCHAR(25);
     DECLARE res VARCHAR(25);
-    DECLARE exit HANDLER FOR NOT FOUND SELECT "Student Not Found";
+    DECLARE exit HANDLER FOR NOT FOUND
+        SET std_name = "Unknown";
+        SET res = "N/A";
     SELECT name INTO std_name FROM Stud_Marks WHERE roll_no = r;
     CALL proc_Grade(r, @res);
     INSERT INTO Result VALUES (r, std_name, @res);
+    return r;
 END //
 DELIMITER ;
-CALL FillResult(1);
-CALL FillResult(2);
-CALL FillResult(3);
-CALL FillResult(4);
-CALL FillResult(5);
+select FillResult(1);
+select FillResult(2);
+select FillResult(3);
+select FillResult(4);
+select FillResult(5);
 SELECT * FROM Result;
 +---------+--------+---------------------+
 | roll_no | name   | class               |
