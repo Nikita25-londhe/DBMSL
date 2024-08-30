@@ -91,9 +91,8 @@ BEGIN
 	VALUES (OLD.book_id, OLD.bname, OLD.bauthor, OLD.bcount,"After delete");
 END//
 DELIMITER ;
-select * from Library;
-select * from Library_Audit;
 insert into Library values(9,"The best day of my life","Mr.Tom",8);
 delete from Library where book_id=2;
 update Library set bcount=bcount+1 where book_id=5;
-
+select * from Library;
+select * from Library_Audit;
