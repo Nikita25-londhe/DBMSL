@@ -1,1 +1,99 @@
+drop table Library;
+drop table library_audit;
+drop trigger before_insert;
+drop trigger after_insert;
+drop trigger before_update;
+drop trigger after_update;
+drop trigger before_delete;
+drop trigger after_delete;
+
+CREATE TABLE Library (
+    book_id INT PRIMARY KEY AUTO_INCREMENT,
+    bname VARCHAR(25),
+    bauthor VARCHAR(25),
+    bcount INT DEFAULT 5
+);
+CREATE TABLE Library_Audit (
+    audit_id INT PRIMARY KEY AUTO_INCREMENT,
+    book_id INT,
+    bname VARCHAR(25),
+    bauthor VARCHAR(25),
+    bcount INT,
+    op_type varchar(25)
+);
+INSERT INTO Library (bname, bauthor)
+VALUES 
+    ("Java", "John"),
+    ("C", "Mac"),
+    ("CPP", "Lio"),
+    ("Ds", "Franklin"),
+    ("Python", "Robert"),
+    ("HTML", "Monk"),
+    ("CSS", "Perry"),
+    ("Javascript", "Navid");
+DELIMITER //
+CREATE TRIGGER before_update
+BEFORE UPDATE ON Library
+FOR EACH ROW
+BEGIN
+    INSERT INTO Library_Audit (book_id, bname, bauthor,bcount,op_type)
+    VALUES (OLD.book_id, OLD.bname, OLD.bauthor, OLD.bcount,"Before update");
+END//
+DELIMITER ;
+
+DELIMITER //
+CREATE TRIGGER after_update
+after UPDATE ON Library
+FOR EACH ROW
+BEGIN
+    INSERT INTO Library_Audit (book_id, bname, bauthor,bcount,op_type)
+    VALUES (new.book_id,new.bname,new.bauthor,new.bcount,"After update");
+END//
+DELIMITER ;
+
+delimiter //
+create trigger before_insert 
+before insert on Library
+for each row
+begin
+declare bookcount int;
+if new.book_id<=0 then
+signal sqlstate '45000' set MESSAGE_TEXT="Id can't be negative";
+end if;
+end//
+delimiter ;
+
+delimiter //
+create trigger after_insert 
+after insert on Library
+for each row
+begin
+insert into Library_Audit (book_id,bname,bauthor,bcount,op_type) 
+values(new.book_id,new.bname,new.bauthor,new.bcount+1,"After insert");
+end//
+delimiter ;
+delimiter //
+create trigger after_delete 
+after delete on Library
+for each row
+begin
+insert into Library_Audit (book_id,bname,bauthor,bcount,op_type)
+values(old.book_id,old.bname,old.bauthor,old.bcount-1,"After delete");
+end//
+delimiter ;
+    
+delimiter //
+CREATE TRIGGER before_delete
+BEFORE DELETE ON Library
+FOR EACH ROW
+BEGIN
+	INSERT INTO Library_Audit (book_id, bname, bauthor, bcount,op_type)
+	VALUES (OLD.book_id, OLD.bname, OLD.bauthor, OLD.bcount,"After delete");
+END//
+DELIMITER ;
+select * from Library;
+select * from Library_Audit;
+insert into Library values(9,"The best day of my life","Mr.Tom",8);
+delete from Library where book_id=2;
+update Library set bcount=bcount+1 where book_id=5;
 
