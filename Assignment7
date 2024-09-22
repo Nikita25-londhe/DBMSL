@@ -1,12 +1,3 @@
-drop table Library;
-drop table library_audit;
-drop trigger before_insert;
-drop trigger after_insert;
-drop trigger before_update;
-drop trigger after_update;
-drop trigger before_delete;
-drop trigger after_delete;
-
 CREATE TABLE Library (
     book_id INT PRIMARY KEY AUTO_INCREMENT,
     bname VARCHAR(25),
