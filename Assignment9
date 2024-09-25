@@ -1,0 +1,97 @@
+db.createCollection("Teacher");
+db.Teacher.insertMany(
+    [
+        {
+            name:"Mr.Amol Shah",
+            qualification:["MTech","Phd"],
+            dept_no:1,
+            dept_name:"Computer",
+            designation:"Professor",
+            experience:
+            {
+                industry:5,
+                teaching:4
+            },
+            salary:
+            {
+                basic:70000,
+                TA:10000,
+                DA:2000,
+                HRA:10000
+            },
+            date_of_joining:new Date("2020-9-25"),
+            appointment_nature:"Permanent",
+            area_of_expertise:["ML","Database"]
+        },
+        {
+            name:"Prof.Usha Patil",
+            qualification:["BE"],
+            dept_no:2,
+            dept_name:"Information Technology",
+            designation:"Associate Professor",
+            experience:
+            {
+                industry:2,
+                teaching:3
+            },
+            salary:
+            {
+                basic:40000,
+                TA:10000,
+                DA:20000,
+                HRA:15000
+            },
+            date_of_joining:new Date("2022-10-25"),
+            appointment_nature:"Adhoc",
+            area_of_expertise:["Artificial Intelligence","Computer Networks"]
+        },
+        {
+            name:"Prof.Deepika Polina",
+            qualification:["ME","phd"],
+            dept_no:3,
+            dept_name:"First Year",
+            designation:"Assistant Professor",
+            experience:
+            {
+                industry:0,
+                teaching:4
+            },
+            salary:
+            {
+                basic:45000,
+                TA:5000,
+                DA:20000,
+                HRA:15000
+            },
+            date_of_joining:new Date("2023-11-2"),
+            appointment_nature:"Permanent",
+            area_of_expertise:["Operating System"]
+        }
+    ]
+)
+db.Teacher.find().pretty();
+db.Teacher.find({dept_name:"Computer"});
+// inside find 0 and 1 can't mention simultaneously _id is only exception
+//printing all the key value except salary and experience
+db.Teacher.find({},{salary:0,experience:0});
+db.Teacher.find({
+    $or:[
+    {dept_name:"Computer"},
+    {dept_name:"Information Technology"},
+    {dept_name:"First Year"}
+]});
+db.Teacher.find({dept_name:{$in:["Computer","Information Technology","First Year"]}});
+db.Teacher.find(
+    {
+        dept_name: { $in: ["Computer", "Information Technology", "E & TC"] },
+        "salary.basic": {
+            $gte: 70000,
+            $lte: 100000
+        }
+    }
+);
+db.Teacher.update({dept_no:1},{$set:{"experience.teaching":10}},{upsert:true});
+db.Teacher.find({}, { name: 1, experience: 1 }).sort({ "experience.teaching": -1 });
+db.Teacher.deleteMany({appointment_nature:"Adhoc"});
+db.Teacher.find().limit(3).sort({"experience.teaching":1}).pretty();
+db.Teacher.updateMany({"experience.teaching":{$gte:10}},{$set:{designation:"Professor"}});
