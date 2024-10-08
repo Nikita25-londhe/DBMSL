@@ -1,0 +1,41 @@
+db.purchase_orders.insertMany( [
+{product: "toothbrush", total: 4.75, customer: "Mike"},
+{product: "guitar", total: 199.99, customer: "Tom"},
+{product: "milk", total: 11.33, customer: "Mike"},
+{product: "pizza", total: 8.50, customer: "Karen"},
+{product: "toothbrush", total: 4.75, customer: "Karen"},
+{product: "pizza", total: 4.75, customer: "Dave"},
+{product: "toothbrush", total: 4.75, customer: "Mike"}]);
+db.purchase_orders.aggregate([{$match:{product:{$in:["toothbrush","pizza"]}}},{$group:{_id:"$product",earning:{$sum:"$total"}}}]);
+{ "_id" : "toothbrush", "earning" : 14.25 }
+{ "_id" : "pizza", "earning" : 13.25 }
+
+db.purchase_orders.count({product:"toothbrush"});
+3
+
+db.purchase_orders.distinct("product");
+[ "guitar", "milk", "pizza", "toothbrush" ]
+
+db.purchase_orders.aggregate([{$group:{_id:"$customer",cost:{$sum:"$total"}}}]);
+{ "_id" : "Dave", "cost" : 4.75 }
+{ "_id" : "Mike", "cost" : 20.83 }
+{ "_id" : "Karen", "cost" : 13.25 }
+{ "_id" : "Tom", "cost" : 199.99 }
+
+db.purchase_orders.aggregate([{$group:{_id:"$product",amount:{$sum:"$total"}}},{$sort:{amount:1}}]);
+{ "_id" : "milk", "amount" : 11.33 }
+{ "_id" : "pizza", "amount" : 13.25 }
+{ "_id" : "toothbrush", "amount" : 14.25 }
+{ "_id" : "guitar", "amount" : 199.99 }
+
+db.purchase_orders.aggregate([{$group:{_id:"$product",amount:{$sum:"$total"}}},{$sort:{amount:1}},{$limit:1}]);
+{ "_id" : "milk", "amount" : 11.33 }
+
+db.purchase_orders.aggregate([{$match:{product:{$in:["toothbrush","pizza"]}}},{$group:{_id:"$customer",amount:{$sum:"$total"}}}]);
+{ "_id" : "Dave", "amount" : 4.75 }
+{ "_id" : "Karen", "amount" : 13.25 }
+{ "_id" : "Mike", "amount" : 9.5 }
+
+db.purchase_orders.aggregate([{$match:{product:"toothbrush"}},{$group:{_id:"$customer",amount:{$sum:"$total"}}},{$sort:{amount:-1}},{$limit:1}]);
+{ "_id" : "Mike", "amount" : 9.5 }
+
