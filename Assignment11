@@ -1,3 +1,4 @@
+//Not completed yet
 db.classes.insert({
 class : "Philosophy 101",
 startDate : new Date(2016, 1, 10),
