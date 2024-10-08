@@ -111,3 +111,23 @@ title: "Chemistry : Matter and Change",
 price: 104.30
 }
 })
+//Queries:
+//1. How many classes does “Alice Jones” teach
+var mapfunc=function(){emit(this.professor,1)};
+var reducefunc=function(professor,count){return Array.sum(count)};
+db.classes.mapReduce(mapfunc,reducefunc,{query:{professor:"Alice Jones"},out:"map_ex_2"})
+db.map_ex_2.find();
+
+//2. Find the total no. of students enrolled for each class
+var mapfunc2=function(){emit(this.class,this.students.length)};
+var reducefunc2=function(year,count){return Array.sum(count)};
+db.classes.mapReduce(mapfunc2,reducefunc2,{query:{},out:"total"});
+db.total.find();
+{ _id: 'Chemistry 101', value: 4 },
+{ _id: 'Geology 101', value: 3 },
+{ _id: 'Astronomy 101', value: 3 },
+{ _id: 'College Algebra', value: 4 },
+{ _id: 'Biology 101', value: 3 },
+{ _id: 'Philosophy 101', value: 3 }
+//Find the total no. of classes conducted by each professor and also the total 
+cost to attend each of the professor’s classes
