@@ -92,7 +92,7 @@ select * from employee;
 
 
 -- Query2->Display all Employee details with Department ‘Computer’ and ‘IT’ and Employee first name starting with p or h.
-select * from employee where(dept_id=4 or dept_id=5) and( emp_fname like 'P%' or emp_fname like 'H%');
+select * from Employee where emp_fname like 'p%' or emp_fname like 'h%' and dept_id in (select dept_id from dept where dept_name in ('Computer','IT')) ;
 +--------+---------+-----------+-----------+-------------------+------------+---------------+
 | emp_id | dept_id | emp_fname | emp_lname | emp_position      | emp_salary | emp_join_date |
 +--------+---------+-----------+-----------+-------------------+------------+---------------+
@@ -100,7 +100,7 @@ select * from employee where(dept_id=4 or dept_id=5) and( emp_fname like 'P%' or
 +--------+---------+-----------+-----------+-------------------+------------+---------------+
 
 -- Query3->lists the number of different Employee Position
-select emp_position from employee;
+select count(distinct(emp_position)) from employee;
 +------------------------+
 | count_of_Emp_positions |
 +------------------------+
