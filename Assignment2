@@ -50,7 +50,7 @@ values
   (4, "Development of E-Commerse website","Pune", 50000,2004),
 	(1,  'Design of New Products', 'Bangalore',75000, 2005 ),
   ( 3, 'Financial Analysis System', 'Mumbai', 40000,2022 ),
-  ( 2, 'HR Training Program', 'Mumbai', 20000,2023)
+  ( 2, 'HR Training Program', 'Mumbai', 20000,2023),
   ( 4, 'IT System Upgrade',   'Pune',  60000,  2024),
   (5,'Computer Graphics Animation','Mumbai', 35000,2023),
   (6, 'Business Expansion Plan', 'Nashik',80000, 2007 ),
