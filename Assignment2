@@ -73,7 +73,7 @@ insert into employee (
         ( 2, 'Amit', 'Vora','HR Manager',  700000,'1983-02-15'),
         (4, 'Sneha', 'Joshi', 'Software Engineer', 90000, '2024-11-20'),
         (5,  'Priya','Shukla', 'Graphics Designer',600000,'1980-07-10'),
-        (6, 'Rahul', 'Gupta', 'Business Analyst',750000,   '2024-04-30');
+        (6, 'Rahul', 'Gupta', 'Business Analyst',750000,   '2024-04-30'),
         ( 3, 'Nayra',  'Sony’,'Account Manager',100000, '2024-02-05’),
         ( 5,'Arun', ‘Mehta',  “Software Developer”,800000, '2022-02-1’),
         ( 7, 'Avani',  'Bhavei',  'Sales Manager',500000, '1992-12-4’);
