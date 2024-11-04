@@ -1,61 +1,89 @@
-package assignment12;
+package demo;
 
+import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import java.util.Iterator;
+import java.util.Scanner;
 import org.bson.Document;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoCredential;
-
-public class Demo {
-    public static void main(String[] args) {
-        try {
-            // Create a Mongo client with IP address and port
-            MongoClient mongo = new MongoClient("10.10.13.97", 27017);
-
-            // If authentication is required, create a credential
-            MongoCredential credential = MongoCredential.createCredential("username", "te31241_db", "password".toCharArray());
-
-            System.out.println("Connected to the database successfully");
-
-            // Access the database
-            MongoDatabase db = mongo.getDatabase("te31241_db");
-
-            // Creating a collection
-            db.createCollection("students");
-
-            // Access the collection
-            MongoCollection<Document> collection = db.getCollection("students");
-
-            // Insert document into collection
-            Document doc = new Document("name", "James");
-            doc.append("age", 30);
-            doc.append("Branch", "Computer");
-            doc.append("city", "Pune");
-            doc.append("CGPA", 8.7);
-            collection.insertOne(doc);
-
-            // Retrieving all documents from collection
-            FindIterable<Document> iterDoc = collection.find();
-
-            // Getting the iterator
-            Iterator<Document> it = iterDoc.iterator();
-            while (it.hasNext()) {
-                System.out.println(it.next());
-            }
-
-            // Updating the document
-            collection.updateOne(Filters.eq("name", "James"), Updates.set("CGPA", 8.9));
-
-            // Deleting the documents
-            collection.deleteOne(Filters.eq("city", "Pune"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+public class temp 
+{
+	public static void main(String[]args)
+	{
+		try
+		{
+			MongoClient mongo=new MongoClient("localhost",27017);
+			System.out.println("connected successfully");
+			MongoDatabase db=mongo.getDatabase("te31241_db");
+			if(db.getCollection("students")==null)
+			{
+				db.createCollection("students");
+			}
+			MongoCollection<Document>collection=db.getCollection("students");
+			Scanner sc=new Scanner(System.in);
+			int choice;
+			System.out.println("1=Insert\n2=Update\n3=Delete\n4Retrieve\n5=Exit");
+			while(true)
+			{
+				System.out.println("Enter choice:");
+				choice=sc.nextInt();
+				switch(choice)
+				{
+				case 1:
+					System.out.println("Enter name:");
+					String name=sc.next();
+					System.out.println("Enter age:");
+					int age=sc.nextInt();
+					System.out.println("Enter branch:");
+					String branch=sc.next();
+					System.out.println("Enter city:");
+					String city=sc.next();
+					System.out.println("Enter CGPA:");
+					double cgpa=sc.nextDouble();
+					Document doc=new Document("name",name)
+							.append("age",age)
+							.append("branch",branch)
+							.append("city",city)
+							.append("cgpa",cgpa);
+					collection.insertOne(doc);
+					System.out.println("Document inserted successfully");
+					break;
+				case 2:
+					System.out.println("Enter name:");
+					name=sc.next();
+					System.out.println("Enter new CGPA:");
+					double cg=sc.nextDouble();
+					collection.updateOne(Filters.eq("name",name),Updates.set("CGPA",cg));
+					System.out.println("Document updated successfully");
+					break;
+				case 3:
+					System.out.println("Enter name you want to delete:");
+					name=sc.next();
+					collection.deleteOne(Filters.eq("name",name));
+					System.out.println("Document deleted successfully");
+					break;
+				case 4:
+					System.out.println("Retrieving all documents");
+					FindIterable <Document>iterdoc=collection.find();
+					Iterator it=iterdoc.iterator();
+					while(it.hasNext())
+					{
+						System.out.println(it.next());
+					}
+					break;
+				case 5:
+					System.exit(0);
+					break;
+				}
+			}
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
 }
-output:
-Document{{_id=6704b2d1feb1b870fa65b5f1, name=James, age=30, Branch=Computer, city=Pune, CGPA=8.7}}
