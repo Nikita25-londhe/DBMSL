@@ -131,3 +131,14 @@ db.total.find();
 { _id: 'Philosophy 101', value: 3 }
 //Find the total no. of classes conducted by each professor and also the total 
 cost to attend each of the professor’s classes
+var mapfun=function(){emit(this.professor,{count:1,cost:this.cost})};
+var reducefun=function(key,values){var value={count:0,cost:0};
+  for(i=0;i<values.length;i++)
+  {
+    value.count+=values[i].count;
+    value.cost+=values[i].cost;
+  }
+  return value;
+}
+db.classes.mapReduce(mapfun,reducefun,{query:{},out:"resultant"});
+db.resultant.find();
