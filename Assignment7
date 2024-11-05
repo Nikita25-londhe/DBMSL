@@ -1,89 +1,77 @@
-CREATE TABLE Library (
-    book_id INT PRIMARY KEY AUTO_INCREMENT,
-    bname VARCHAR(25),
-    bauthor VARCHAR(25),
-    bcount INT DEFAULT 5
-);
-CREATE TABLE Library_Audit (
-    audit_id INT PRIMARY KEY AUTO_INCREMENT,
-    book_id INT,
-    bname VARCHAR(25),
-    bauthor VARCHAR(25),
-    bcount INT,
-    op_type varchar(25)
-);
-INSERT INTO Library (bname, bauthor)
-VALUES 
-    ("Java", "John"),
-    ("C", "Mac"),
-    ("CPP", "Lio"),
-    ("Ds", "Franklin"),
-    ("Python", "Robert"),
-    ("HTML", "Monk"),
-    ("CSS", "Perry"),
-    ("Javascript", "Navid");
-DELIMITER //
-CREATE TRIGGER before_update
-BEFORE UPDATE ON Library
-FOR EACH ROW
-BEGIN
-    INSERT INTO Library_Audit (book_id, bname, bauthor,bcount,op_type)
-    VALUES (OLD.book_id, OLD.bname, OLD.bauthor, OLD.bcount,"Before update");
-END//
-DELIMITER ;
 
-DELIMITER //
-CREATE TRIGGER after_update
-after UPDATE ON Library
-FOR EACH ROW
-BEGIN
-    INSERT INTO Library_Audit (book_id, bname, bauthor,bcount,op_type)
-    VALUES (new.book_id,new.bname,new.bauthor,new.bcount,"After update");
-END//
-DELIMITER ;
-
+create table Library
+(
+  id int primary key,
+  name varchar(25),
+  author varchar(25)
+);
+create table Library_Audit
+(
+  id int primary key auto_increment,
+  book_id int,
+  name varchar(25),
+  author varchar(25),
+  action_type varchar(25),
+  action_time timestamp default current_timestamp
+);
 delimiter //
-create trigger before_insert 
-before insert on Library
+create trigger before_insert before insert on Library
 for each row
 begin
-declare bookcount int;
-if new.book_id<=0 then
-signal sqlstate '45000' set MESSAGE_TEXT="Id can't be negative";
+if new.id<0 then 
+signal sqlstate '45000' set message_text="ID Can't be negative";
+end if;
+if new.name is NULL or new.name="" then 
+signal sqlstate '45000' set message_text="Name can't be Null";
+end if;
+ end//
+ delimiter ;
+ delimiter //
+create trigger after_insert after insert on Library for each row
+begin
+insert into library_audit (book_id,name,author,action_type)values(new.id,new.name,new.author,"insert");
+end//
+delimiter ; 
+insert into Library
+values(1,"abc","me"),
+(2,"My Got","James"),
+(3,"My dream Phone pay","Nikita");
+select * from Library;
+select* from library_audit;
+delimiter //
+create trigger before_update before update on Library for each row
+begin
+if new.id<0 then 
+signal sqlstate '45000' set message_text="ID Can't be negative";
+end if;
+if new.name is NULL or new.name="" then 
+signal sqlstate '45000' set message_text="Name can't be Null";
 end if;
 end//
 delimiter ;
-
 delimiter //
-create trigger after_insert 
-after insert on Library
+create trigger after_update after update on Library for each row
+begin
+update library_audit set book_id=new.id,name=new.name,author=new.author,action_type="update" where book_id=old.id;
+end//
+delimiter ;
+
+update Library set name="xyz" where id=1;
+delimiter //
+create trigger before_delete
+before delete on Library
 for each row
 begin
-insert into Library_Audit (book_id,bname,bauthor,bcount,op_type) 
-values(new.book_id,new.bname,new.bauthor,new.bcount+1,"After insert");
+insert into library_audit(book_id,name,author,action_type) values(old.id,old.name,old.author,"delete");
 end//
 delimiter ;
 delimiter //
-create trigger after_delete 
+create trigger after_delete
 after delete on Library
 for each row
 begin
-insert into Library_Audit (book_id,bname,bauthor,bcount,op_type)
-values(old.book_id,old.bname,old.bauthor,old.bcount-1,"After delete");
+signal sqlstate '45000' set message_text="Deleteed";
 end//
 delimiter ;
-    
-delimiter //
-CREATE TRIGGER before_delete
-BEFORE DELETE ON Library
-FOR EACH ROW
-BEGIN
-	INSERT INTO Library_Audit (book_id, bname, bauthor, bcount,op_type)
-	VALUES (OLD.book_id, OLD.bname, OLD.bauthor, OLD.bcount,"After delete");
-END//
-DELIMITER ;
-insert into Library values(9,"The best day of my life","Mr.Tom",8);
-delete from Library where book_id=2;
-update Library set bcount=bcount+1 where book_id=5;
-select * from Library;
-select * from Library_Audit;
+delete from library where id=1;
+select * from library_audit;
